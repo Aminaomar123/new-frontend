@@ -6,29 +6,29 @@ const equipmentData = [
   {
     name: 'Leddar',
     description: 'High-quality DSLR camera for photography and video.',
-    price: 50,
+    price: 50000,
     imageUrl:   {
-      name: 'Tractor',
+      name: 'Leddar',
       description: 'High-quality DSLR camera for photography and video.',
-      price: 50,
+      price:  50000,
       imageUrl: 'https://via.placeholder.com/150'
     },
   },
   {
     name: 'Neil Gun',
     description: 'Powerful laptop for design and development.',
-    price: 100,
+    price: 20000,
     imageUrl:   {
-      name: 'Tractor',
+      name: 'Ladder',
       description: 'High-quality DSLR camera for photography and video.',
-      price: 50,
+      price: 50000,
       imageUrl: 'https://via.placeholder.com/150'
     },
   },
   {
     name: 'WHeel Barrow',
     description: 'High-definition drone for aerial shots.',
-    price: 150,
+    price: 60000,
     imageUrl: 'https://via.placeholder.com/150'
   },
 ];

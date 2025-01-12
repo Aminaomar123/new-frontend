@@ -1,25 +1,41 @@
 import React, { useState } from 'react';
 import './BookingForm.css';
 
-// Example equipment options
 const equipmentOptions = [
-  { id: 1, name: 'Tractor' },
-  { id: 2, name: 'Laptop' },
-  { id: 3, name: 'Drone' }
+  { id: 1, name: 'Leddar' },
+
+  { id: 2, name: 'Neil Gun' },
+  { id: 3, name: 'Wheel Barrow' }
+];
+
+const mockBookings = [
+  {
+    id: 1,
+    name: 'John Doe',
+    selectedEquipment: ['Leddar', 'Wheel Barrow'],
+    startDate: '2025-01-15',
+    endDate: '2025-01-20'
+  },
+  {
+    id: 2,
+    name: 'Jane Smith',
+    selectedEquipment: ['Neil Gun'],
+    startDate: '2025-02-10',
+    endDate: '2025-02-12'
+  }
 ];
 
 const BookingForm = () => {
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
-    phone: '',
     selectedEquipment: [],
     startDate: '',
     endDate: '',
-    notes: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [viewBookings, setViewBookings] = useState(false); // Toggle between views
+  const [bookings, setBookings] = useState(mockBookings); // Set mock bookings
 
   // Handle input field changes
   const handleChange = (e) => {
@@ -41,49 +57,34 @@ const BookingForm = () => {
   };
 
   // Handle form submission
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
-      // Construct the booking data (you can format the data if needed before sending it)
-      const bookingData = {
+      // Simulating adding a booking to the "database"
+      const newBooking = {
+        id: bookings.length + 1,
         name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
         selectedEquipment: formData.selectedEquipment,
         startDate: formData.startDate,
         endDate: formData.endDate,
-        notes: formData.notes
       };
 
-      // Make a POST request to your backend API to save the data into the database
-      const response = await fetch('http://yourapiurl.com/api/equipment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bookingData), // Convert the form data to a JSON string
-      });
+      // Add the new booking to the bookings array
+      setBookings((prevBookings) => [...prevBookings, newBooking]);
 
-      if (!response.ok) {
-        throw new Error('Something went wrong. Please try again later.');
-      }
-
-      // If successful, alert the user and reset the form
+      // Reset the form
       alert('Booking submitted successfully!');
       setFormData({
         name: '',
-        email: '',
-        phone: '',
         selectedEquipment: [],
         startDate: '',
         endDate: '',
-        notes: ''
       });
     } catch (error) {
-      setError(error.message);
+      setError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -91,102 +92,92 @@ const BookingForm = () => {
 
   return (
     <div className="booking-form-container">
-      <h2>Customer Booking Form</h2>
-      <form onSubmit={handleSubmit} className="booking-form">
-        {error && <div className="error-message">{error}</div>}
-
-        <div className="form-group">
-          <label htmlFor="name">Full Name:</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
+      <h2>{viewBookings ? 'Your Bookings' : 'Customer Booking Form'}</h2>
+      
+      {viewBookings ? (
+        <div className="view-bookings">
+          {bookings.length === 0 ? (
+            <p>No bookings yet.</p>
+          ) : (
+            <ul>
+              {bookings.map((booking, index) => (
+                <li key={index}>
+                  <p>Booking ID: {booking.id}</p>
+                  <p>Name: {booking.name}</p>
+                  <p>Selected Equipment: {booking.selectedEquipment.join(', ')}</p>
+                  <p>Start Date: {booking.startDate}</p>
+                  <p>End Date: {booking.endDate}</p>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="booking-form">
+          {error && <div className="error-message">{error}</div>}
 
-        <div className="form-group">
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className="form-group">
+            <label htmlFor="name">Full Name:</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="phone">Phone Number:</label>
-          <input
-            type="text"
-            id="phone"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className="form-group">
+            <label>Select Equipment:</label>
+            {equipmentOptions.map((equipment) => (
+              <div key={equipment.id} className="equipment-checkbox">
+                <input
+                  type="checkbox"
+                  id={equipment.name}
+                  name="selectedEquipment"
+                  value={equipment.name}
+                  checked={formData.selectedEquipment.includes(equipment.name)}
+                  onChange={handleChange}
+                />
+                <label htmlFor={equipment.name}>{equipment.name}</label>
+              </div>
+            ))}
+          </div>
 
-        <div className="form-group">
-          <label>Select Equipment:</label>
-          {equipmentOptions.map((equipment) => (
-            <div key={equipment.id} className="equipment-checkbox">
-              <input
-                type="checkbox"
-                id={equipment.name}
-                name="selectedEquipment"
-                value={equipment.name}
-                checked={formData.selectedEquipment.includes(equipment.name)}
-                onChange={handleChange}
-              />
-              <label htmlFor={equipment.name}>{equipment.name}</label>
-            </div>
-          ))}
-        </div>
+          <div className="form-group">
+            <label htmlFor="startDate">Start Date:</label>
+            <input
+              type="date"
+              id="startDate"
+              name="startDate"
+              value={formData.startDate}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="startDate">Start Date:</label>
-          <input
-            type="date"
-            id="startDate"
-            name="startDate"
-            value={formData.startDate}
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className="form-group">
+            <label htmlFor="endDate">End Date:</label>
+            <input
+              type="date"
+              id="endDate"
+              name="endDate"
+              value={formData.endDate}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="endDate">End Date:</label>
-          <input
-            type="date"
-            id="endDate"
-            name="endDate"
-            value={formData.endDate}
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <button type="submit" className="submit-button" disabled={loading}>
+            {loading ? 'Submitting...' : 'Submit Booking'}
+          </button>
+        </form>
+      )}
 
-        <div className="form-group">
-          <label htmlFor="notes">Additional Notes:</label>
-          <textarea
-            id="notes"
-            name="notes"
-            value={formData.notes}
-            onChange={handleChange}
-            rows="4"
-          ></textarea>
-        </div>
-
-        <button type="submit" className="submit-button" disabled={loading}>
-          {loading ? 'Submitting...' : 'Submit Booking'}
-        </button>
-      </form>
+      <button onClick={() => setViewBookings(!viewBookings)}>
+        {viewBookings ? 'Go to Booking Form' : 'View Your Bookings'}
+      </button>
     </div>
   );
 };

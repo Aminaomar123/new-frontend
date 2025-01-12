@@ -1,66 +1,141 @@
-/* Styling for the booking form */
+/* Container for the whole booking form */
 .booking-form-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .booking-form-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .booking-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  
-  label {
-    font-weight: bold;
-  }
-  
-  input,
-  select,
-  textarea {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-  }
-  
-  textarea {
-    resize: vertical;
-  }
-  
-  button.submit-button {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 18px;
-  }
-  
-  button.submit-button:hover {
-    background-color: #45a049;
-  }
-  
-  .equipment-checkbox {
-    margin-bottom: 8px;
-  }
-  
-  .equipment-checkbox input {
-    margin-right: 10px;
-  }
-  
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading styling */
+.booking-form-container h2 {
+  text-align: center;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Form section styles */
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Form group for each input and label */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Label styling */
+label {
+  font-weight: bold;
+  font-size: 16px;
+  color: #555;
+}
+
+/* Input and select styling */
+input, select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  width: 100%;
+}
+
+/* Textarea styling (if any is added later) */
+textarea {
+  resize: vertical;
+}
+
+/* Checkbox group styling */
+.equipment-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Error message styling */
+.error-message {
+  color: red;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Submit button styling */
+.submit-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  border: none;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+}
+
+/* Button to toggle view bookings */
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Button active state */
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Styling for view bookings section */
+.view-bookings-container {
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.view-bookings-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.view-bookings-container li {
+  background-color: #e9e9e9;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.view-bookings-container li p {
+  margin: 5px 0;
+  color: #333;
+}
+
+/* Payment status message */
+.payment-status {
+  font-size: 18px;
+  font-weight: bold;
+  color: #4caf50;
+  text-align: center;
+  margin-top: 20px;
+}
