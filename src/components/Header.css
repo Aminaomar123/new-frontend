@@ -1,0 +1,52 @@
+/* src/components/Header.css */
+
+/* Style for the header container */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2a9d93; /* Background color */
+    color: white;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Logo styling */
+  .logo {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  
+  /* Navigation container for the links */
+  .nav-links {
+    display: flex;
+    gap: 20px; /* Space between the links */
+  }
+  
+  /* Styling for each navigation link */
+  .nav-link {
+    text-decoration: none;
+    color: white;
+    font-size: 1.1em;
+    transition: color 0.3s ease;
+  }
+  
+  /* Hover effect for the links */
+  .nav-link:hover {
+    color: #fff;
+    border-bottom: 2px solid #fff;
+  }
+  
+  /* Responsive behavior for smaller screens */
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .nav-links {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+  

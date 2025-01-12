@@ -1,32 +1,25 @@
 // src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import Dashboard from './components/Dashboard';
-import HomePage from './components/HomePage';
-import SignUpLoginPage from './components/SignUpLoginPage';
-import EquipmentPage from './components/EquipmentPage';
-import BookingPage from './components/BookingPage';
-import ProtectedRoute from './guards/ProtectedRoute';
-import './App.css';
 
-function App() {
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Header from './components/Header';
+import Home from './components/Home';  // Home component with equipment
+import Booking from './components/Booking'; // Booking component to show the booking form
+
+const App = () => {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <div className="app">
+        <Header />
+        
         <Routes>
-          <Route path="/" element={<Dashboard />}>
-            <Route index element={<HomePage />} />
-            <Route path="signup-login" element={<SignUpLoginPage />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="equipment" element={<EquipmentPage />} />
-              <Route path="booking" element={<BookingPage />} />
-            </Route>
-          </Route>
+          <Route path="/" element={<Home />} /> {/* Default route for home */}
+          <Route path="/home" element={<Home />} /> {/* Explicit route for home */}
+          <Route path="/booking" element={<Booking />} /> {/* Route for booking */}
         </Routes>
-      </Router>
-    </AuthProvider>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
