@@ -3,34 +3,72 @@
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
+  justify-content: center; /* Centers the cards on the page */
 }
 
 .equipment-card {
   border: 1px solid #ccc;
-  padding: 10px;
-  width: 200px;
+  padding: 15px;
+  width: 220px; /* Adjust width of the card */
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background-color: #fff;
+  transition: transform 0.3s ease; /* Added hover effect */
+}
+
+.equipment-card:hover {
+  transform: scale(1.05); /* Slightly enlarge the card on hover */
 }
 
 .equipment-name {
   font-size: 18px;
   font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .equipment-description {
   font-size: 14px;
   margin: 10px 0;
+  color: #555; /* Slightly darker text for readability */
 }
 
 .equipment-price {
   font-size: 16px;
   font-weight: bold;
   color: rgb(0, 70, 128);
+  margin-bottom: 15px;
 }
 
 .equipment-image {
   width: 100%;
   height: auto;
   border-radius: 5px;
+  max-height: 150px; /* Set a max height for images */
+  object-fit: cover; /* Ensures images fit well within the space */
+  margin-bottom: 15px;
+}
+
+/* Button Styling */
+button {
+  background-color: rgb(0, 70, 128);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: rgb(0, 55, 100); /* Darker shade on hover */
+}
+
+/* Responsive Design: Adjust the layout for smaller screens */
+@media (max-width: 768px) {
+  .equipment-card {
+    width: 100%; /* Full width on small screens */
+    margin-bottom: 20px; /* Add margin at the bottom */
+  }
 }

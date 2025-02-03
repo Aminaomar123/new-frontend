@@ -1,25 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './payment.css';
 
 const PaymentForm = () => {
-  // State for payment details
   const [paymentData, setPaymentData] = useState({
-    name: '',
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
+    booking: '',
+    status: '',
+    amount: '',
   });
-  
-  // States for error handling, loading status, and payment status
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState(null);
-
-  // State to store payment history
   const [paymentHistory, setPaymentHistory] = useState([]);
-  const [viewHistory, setViewHistory] = useState(false);  // Toggle to show payment history
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [paymentStatus, setPaymentStatus] = useState(null);
+  const [currentPayment, setCurrentPayment] = useState(null); // For editing
+  const [viewMode, setViewMode] = useState('form'); // 'form' or 'history' or 'edit'
 
-  // Handle input changes for payment form
+  // Fetch payment history
+  useEffect(() => {
+    const fetchPayments = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/payment/');
+        setPaymentHistory(response.data);
+      } catch {
+        setError('Failed to load payment history.');
+      }
+    };
+    fetchPayments();
+  }, []);
+
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPaymentData((prevData) => ({
@@ -28,68 +37,72 @@ const PaymentForm = () => {
     }));
   };
 
-  // Handle form submission to simulate payment
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     setPaymentStatus(null);
 
-    // Basic validation
-    if (!paymentData.cardNumber || !paymentData.expiryDate || !paymentData.cvv) {
-      setError('All fields are required.');
-      setLoading(false);
-      return;
-    }
-
-    // Simulating an API call for payment processing
     try {
-      const isPaymentSuccessful = Math.random() > 0.2;  // 80% success rate for demo purposes
-      if (isPaymentSuccessful) {
-        setPaymentStatus('Payment Successful! Thank you for your purchase.');
-
-        // Save successful payment to history
-        const newPayment = {
-          id: paymentHistory.length + 1,
-          name: paymentData.name,
-          amount: '$100.00',  // Simulating the amount for demo purposes
-          status: 'Success',
-          date: new Date().toLocaleString(),
-        };
-
-        setPaymentHistory([...paymentHistory, newPayment]);
+      if (currentPayment) {
+        // Update existing payment
+        await axios.put(
+          `http://127.0.0.1:8000/api/payment/${currentPayment.id}/`,
+          paymentData
+        );
+        setPaymentStatus('Payment updated successfully.');
       } else {
-        setPaymentStatus('Payment Failed. Please try again.');
+        // Create new payment
+        await axios.post('http://127.0.0.1:8000/api/payment/', paymentData);
+        setPaymentStatus('Payment submitted successfully.');
       }
-    } catch (error) {
-      setError('Something went wrong. Please try again.');
+      setViewMode('history'); // Go back to history view
+    } catch {
+      setError('Failed to process payment. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Toggle payment history view
-  const toggleHistory = () => {
-    setViewHistory(!viewHistory);
+  // Handle editing a payment
+  const handleEdit = (payment) => {
+    setCurrentPayment(payment);
+    setPaymentData({
+      booking: payment.booking,
+      status: payment.status,
+      amount: payment.amount,
+    });
+    setViewMode('edit');
+  };
+
+  // Toggle view between form and history
+  const toggleView = () => {
+    setViewMode(viewMode === 'history' ? 'form' : 'history');
+    if (viewMode === 'edit') {
+      setCurrentPayment(null); // Reset editing state
+    }
   };
 
   return (
     <div className="payment-form-container">
-      <h2>{viewHistory ? 'Payment History' : 'Payment Form'}</h2>
-
-      {viewHistory ? (
+      {viewMode === 'history' ? (
         <div className="payment-history">
+          <h2>Payment History</h2>
           {paymentHistory.length === 0 ? (
-            <p>No payments made yet.</p>
+            <p>No payments found.</p>
           ) : (
             <ul>
-              {paymentHistory.map((payment, index) => (
-                <li key={index} className="payment-history-item">
+              {paymentHistory.map((payment) => (
+                <li key={payment.id} className="payment-history-item">
                   <p><strong>Payment ID:</strong> {payment.id}</p>
-                  <p><strong>Customer:</strong> {payment.name}</p>
+                  <p><strong>Customer Name:</strong> {payment.name}</p>
+                  <p><strong>Equipment Name:</strong> {payment.equipmentName}</p>
+                  <p><strong>Booking:</strong> {payment.booking}</p>
                   <p><strong>Amount:</strong> {payment.amount}</p>
                   <p><strong>Status:</strong> {payment.status}</p>
-                  <p><strong>Date:</strong> {payment.date}</p>
+                  <p><strong>Date:</strong> {new Date(payment.paid_on).toLocaleString()}</p>
+                  <button onClick={() => handleEdit(payment)} className="edit-button">Edit</button>
                 </li>
               ))}
             </ul>
@@ -97,58 +110,49 @@ const PaymentForm = () => {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="payment-form">
+          <h2>{currentPayment ? 'Edit Payment' : 'New Payment'}</h2>
           {error && <div className="error-message">{error}</div>}
           {paymentStatus && <div className="payment-status">{paymentStatus}</div>}
 
           <div className="form-group">
-            <label htmlFor="name">Customer Name:</label>
+            <label>Booking</label>
             <input
               type="text"
-              id="name"
-              name="name"
-              value={paymentData.name}
+              name="booking"
+              value={paymentData.booking}
               onChange={handleChange}
               required
             />
           </div>
-
           <div className="form-group">
-            <label htmlFor="name">Equpment Name:</label>
             <input
               type="text"
-              id="name"
-              name="name"
-              value={paymentData.name}
+              name="status"
+              value={paymentData.status}
               onChange={handleChange}
               required
             />
           </div>
-          
           <div className="form-group">
-            <label htmlFor="name">Amout:</label>
+            <label>Amount</label>
+   
             <input
               type="number"
-              id="name"
-              name="name"
-              value={paymentData.name}
+              name="amount"
+              value={paymentData.amount}
               onChange={handleChange}
               required
             />
           </div>
-         
-
-       
-
-       
 
           <button type="submit" className="submit-button" disabled={loading}>
-            {loading ? 'Processing Payment...' : 'Submit Payment'}
+            {loading ? 'Processing...' : currentPayment ? 'Update Payment' : 'Submit Payment'}
           </button>
         </form>
       )}
 
-      <button onClick={toggleHistory} className="view-history-button">
-        {viewHistory ? 'Go to Payment Form' : 'View Payment History'}
+      <button onClick={toggleView} className="view-history-button">
+        {viewMode === 'history' ? 'Create New Payment' : 'View Payment History'}
       </button>
     </div>
   );
